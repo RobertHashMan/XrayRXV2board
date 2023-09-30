@@ -222,6 +222,7 @@ function enable_xrayr_rule_check() {
         LOGE "当前未安装xrayR,无/etc/XrayR目录,请确认"
     fi
     wget -O ${RULE_LIST_PATH} -N --no-check-certificate ${RULE_LIST_SOURCE}
+    LOGI "更新rulelist成功,重启xrayr"
     xrayr restart
 }
 
@@ -232,9 +233,9 @@ function time_zone_set() {
 }
 
 #for customized route setting
-function enable_xrayr_route_setting() {
-
-}
+#function enable_xrayr_route_setting() {
+#
+#}
 
 function main() {
     if [[ $# -gt 0 ]]; then
