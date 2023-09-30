@@ -256,3 +256,5 @@ function main() {
         esac
     fi
 }
+
+main $*
