@@ -199,6 +199,20 @@ function xrayr_node_type_setting() {
 
 #for speed limit
 function enable_xrayr_speed_limit() {
+    #default speed limit,unit:mbps
+    local speed_limit=15
+    if [ $# -gt 0]; then
+        speed_limit=$1
+    fi
+    if [ ${speed_limit} -le 0 ]; then
+        LOGE "速率限制设定≤0,请检查确认"
+        exit 0
+    fi
+    if [[ -f ${CONFIG_PATH} ]]; then
+        sed -i "s/Limit:.*/Limit: ${speed_limit}/g" ${CONFIG_PATH}
+        sed -i "s/LimitSpeed:.*/LimitSpeed: ${speed_limit}/g" ${CONFIG_PATH}
+        sed -i "s/LimitDuration:.*/LimitDuration: 30/g" ${CONFIG_PATH}
+    fi
 
 }
 
@@ -213,8 +227,8 @@ function enable_xrayr_rule_check() {
 
 function time_zone_set() {
     LOGI "修改时区为CHN-ShangHai时区..."
-    rm -rf  /etc/localtime
-    ln -s /usr/share/zoneinfo/Asia/Shanghai   /etc/localtime
+    rm -rf /etc/localtime
+    ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 }
 
 #for customized route setting
@@ -223,23 +237,21 @@ function enable_xrayr_route_setting() {
 }
 
 function main() {
-        if [[ $# -gt 0 ]]; then
+    if [[ $# -gt 0 ]]; then
         case $1 in
-            "install")
-                xrayr_setting
-                ;;
-            "optimize")
-                tcp_tune
-                ;;
-            "ruleset")
-                enable_xrayr_rule_check
-                ;;
-            "time")
-                time_zone_set
-                ;;
-            *)
-                ;;
-                easc
+        "install")
+            xrayr_setting
+            ;;
+        "optimize")
+            tcp_tune
+            ;;
+        "ruleset")
+            enable_xrayr_rule_check
+            ;;
+        "time")
+            time_zone_set
+            ;;
+        *) ;;
+        esac
     fi
 }
-
