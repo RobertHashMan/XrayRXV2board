@@ -222,6 +222,7 @@ function enable_xrayr_rule_check() {
         LOGE "当前未安装xrayR,无/etc/XrayR目录,请确认"
     fi
     wget -O ${RULE_LIST_PATH} -N --no-check-certificate ${RULE_LIST_SOURCE}
+    sed -i "s/RuleListPath:.*/RuleListPath: ${RULE_LIST_PATH}/g" ${CONFIG_PATH}
     LOGI "更新rulelist成功,重启xrayr"
     xrayr restart
 }
