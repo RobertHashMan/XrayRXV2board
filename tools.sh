@@ -9,7 +9,7 @@
 
 #API related
 NODE_ID=""
-NODE_TYPE="ShdowSocks"
+NODE_TYPE="Shadowsocks"
 PANEL_TYPE=''
 API_HOST_KEY=''
 API_HOST_ADDRESS=''
