@@ -9,7 +9,7 @@
 
 #API related
 NODE_ID=""
-NODE_TYPE="ShdowScoks"
+NODE_TYPE="ShdowSocks"
 PANEL_TYPE=''
 API_HOST_KEY=''
 API_HOST_ADDRESS=''
@@ -115,7 +115,7 @@ function xrayr_panel_setting() {
         PANEL_TYPE=${panel_type}
     fi
     LOGI "设置PanelType:${PANEL_TYPE}"
-    sed -i "s/PanelType:.*/PanelType: ${PANEL_TYPE}/g" ${CONFIG_PATH}
+    sed -i "s/PanelType:.*/PanelType: \"${PANEL_TYPE}\"/g" ${CONFIG_PATH}
 }
 
 #set up api host
