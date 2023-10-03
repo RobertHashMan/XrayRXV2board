@@ -129,7 +129,7 @@ function xrayr_api_host_setting() {
         local api_host=''
         read -p "当前未预设API_HOST,请手动指定": api_host
         LOGI "当前所指定的API_HOST值为:${api_host}"
-        if [ -z ${apt_host} ]; then
+        if [ -z ${api_host} ]; then
             LOGE "未输入有效的API_HOST,脚本将退出"
             exit 0
         fi
