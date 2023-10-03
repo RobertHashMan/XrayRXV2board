@@ -102,14 +102,14 @@ function xrayr_setting() {
 
 #set up panel type
 function xrayr_panel_setting() {
-    if [ $# -gt 0]; then
+    if [ $# -gt 0 ]; then
         PANEL_TYPE=$1
     fi
     if [[ -z "${PANEL_TYPE}" ]]; then
         local panel_type=""
-        read -p "当前未设置有效的ApiKey,请手动指定:" panel_type
+        read -p "当前未设置有效的PanelType,请手动指定:" panel_type
         if [ -z ${panel_type} ]; then
-            LOGE "未输入有效的API_HOST,脚本将退出"
+            LOGE "未输入有效的PanelType,脚本将退出"
             exit 0
         fi
         PANEL_TYPE=${panel_type}
@@ -153,7 +153,7 @@ function xrayr_api_key_setting() {
         local api_key=""
         read -p "当前未设置有效的ApiKey,请手动指定:" api_key
         if [ -z ${api_key} ]; then
-            LOGE "未输入有效的API_HOST,脚本将退出"
+            LOGE "未输入有效的ApiKey,脚本将退出"
             exit 0
         fi
         API_HOST_KEY=${api_key}
@@ -170,7 +170,7 @@ function xrayr_node_id_setting() {
         local node_id=""
         read -p "当前未设置有效的NodeID,请手动指定:" node_id
         if [ -z ${node_id} ]; then
-            LOGE "未输入有效的API_HOST,脚本将退出"
+            LOGE "未输入有效的NodeID,脚本将退出"
             exit 0
         fi
         NODE_ID=${node_id}
@@ -188,7 +188,7 @@ function xrayr_node_type_setting() {
         local node_type=""
         read -p "当前未设置有效的NodeType,请手动指定:" node_type
         if [ -z ${node_type} ]; then
-            LOGE "未输入有效的API_HOST,脚本将退出"
+            LOGE "未输入有效的NodeType,脚本将退出"
             exit 0
         fi
         NODE_TYPE=${node_type}
