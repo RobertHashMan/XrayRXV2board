@@ -8,7 +8,7 @@
 ##########################################################################
 
 #API related
-NODE_ID=0
+NODE_ID=""
 NODE_TYPE="ShdowScoks"
 PANEL_TYPE=''
 API_HOST_KEY=''
@@ -114,8 +114,8 @@ function xrayr_panel_setting() {
         fi
         PANEL_TYPE=${panel_type}
     fi
-    LOGI "设置PanelType:${panel_type}"
-    sed -i 's/\"SSpanel\"/\"${PANEL_TYPE}\"/g' ${CONFIG_PATH}
+    LOGI "设置PanelType:${PANEL_TYPE}"
+    sed -i "s/PanelType:.*/PanelType: ${PANEL_TYPE}/g" ${CONFIG_PATH}
 }
 
 #set up api host
@@ -133,7 +133,7 @@ function xrayr_api_host_setting() {
             LOGE "未输入有效的API_HOST,脚本将退出"
             exit 0
         fi
-        API_HOST_ADDRESS=${apt_host}
+        API_HOST_ADDRESS=${api_host}
     fi
     #judge whether the host is avaiable
     local status=$(curl -s -m 5 -IL ${API_HOST_ADDRESS} | grep 200)
