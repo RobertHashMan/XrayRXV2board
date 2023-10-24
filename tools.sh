@@ -276,7 +276,7 @@ function enable_xrayr_route_setting() {
         exit 1
     fi
     wget -O ${ROUTE_PATH} -N --no-check-certificate ${CUSTOM_ROUTE_SOURCE}
-    sed -i "s#RuleListPath:.*#RuleListPath: ${RULE_LIST_PATH}#g" ${CONFIG_PATH}
+    sed -i "s#RouteConfigPath:.*#RouteConfigPath: ${ROUTE_PATH}#g" ${CONFIG_PATH}
     LOGI "更新自定义路由成功,重启xrayr"
     xrayr restart
 }
