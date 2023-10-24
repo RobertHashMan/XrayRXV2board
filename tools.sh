@@ -7,18 +7,27 @@
 #
 ##########################################################################
 
-#API related
+#variable related
 NODE_ID=""
 NODE_TYPE="Shadowsocks"
 PANEL_TYPE=''
 API_HOST_KEY=''
+ERROR_LOG_PATH=''
+ACCESS_LOG_PATH=''
 API_HOST_ADDRESS=''
 
+#constant related
+declare -r GEO_IP='/etc/XrayR/geoip.dat'
+declare -r GEO_SITE='/etc/XrayR/geosite.dat'
+declare -r ROUTE_PATH='/etc/XrayR/route.json'
 declare -r CONFIG_PATH='/etc/XrayR/config.yml'
 declare -r RULE_LIST_PATH='/etc/XrayR/rulelist'
 declare -r EXECTUABLE_FILE_PATH='/usr/local/XrayR/XrayR'
 declare -r SYSTEMD_SERVICE_PATH='/etc/systemd/system/XrayR.service'
 declare -r RULE_LIST_SOURCE='https://raw.githubusercontent.com/RobertHashMan/XrayRXV2board/main/rulelist.yml'
+declare -r CUSTOM_ROUTE_SOURCE='https://raw.githubusercontent.com/RobertHashMan/XrayRXV2board/main/route.json'
+declare -r GEO_IP_SOURCE='https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat'
+declare -r GEO_SITE_SOURCE='https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat'
 
 #Some basic settings here
 plain='\033[0m'
@@ -84,6 +93,32 @@ EOF
 
 function root_check() {
     [[ $EUID -ne 0 ]] && echo -e "${red}错误：${plain} 必须使用root用户运行此脚本!\n" && exit 1
+}
+
+#for update geo data
+function update_geo_assets() {
+    #back up first
+    mv ${GEO_IP} ${GEO_IP}.bak
+    #update data
+    curl -s -L -o ${GEO_IP} ${GEO_IP_SOURCE}
+    if [[ $? -ne 0 ]]; then
+        echo "update geoip.dat failed"
+        mv ${GEO_IP}.bak ${GEO_IP}
+    else
+        echo "update geoip.dat succeed"
+        rm -f ${GEO_IP}.bak
+    fi
+    mv ${GEO_SITE} ${GEO_SITE}.bak
+    curl -s -L -o ${GEO_SITE} ${GEO_SITE_SOURCE}
+    if [[ $? -ne 0 ]]; then
+        echo "update geosite.dat failed"
+        mv ${GEO_SITE}.bak ${GEO_SITE}
+    else
+        echo "update geosite.dat succeed"
+        rm -f ${GEO_SITE}.bak
+    fi
+    #restart xrary
+    xrayr restart
 }
 
 function xrayr_setting() {
@@ -220,6 +255,7 @@ function enable_xrayr_speed_limit() {
 function enable_xrayr_rule_check() {
     if [ ! -d "/etc/XrayR" ]; then
         LOGE "当前未安装xrayR,无/etc/XrayR目录,请确认"
+        exit 1
     fi
     wget -O ${RULE_LIST_PATH} -N --no-check-certificate ${RULE_LIST_SOURCE}
     sed -i "s#RuleListPath:.*#RuleListPath: ${RULE_LIST_PATH}#g" ${CONFIG_PATH}
@@ -234,9 +270,31 @@ function time_zone_set() {
 }
 
 #for customized route setting
-#function enable_xrayr_route_setting() {
-#
-#}
+function enable_xrayr_route_setting() {
+    if [ ! -d "/etc/XrayR" ]; then
+        LOGE "当前未安装xrayR,无/etc/XrayR目录,请确认"
+        exit 1
+    fi
+    wget -O ${ROUTE_PATH} -N --no-check-certificate ${CUSTOM_ROUTE_SOURCE}
+    sed -i "s#RuleListPath:.*#RuleListPath: ${RULE_LIST_PATH}#g" ${CONFIG_PATH}
+    LOGI "更新自定义路由成功,重启xrayr"
+    xrayr restart
+}
+
+#for crontab jobs setting
+#1.clear logs if enabled log
+#2.update geo assets
+#3.restart xrayr
+function enable_xrayr_cron_job() {
+    local home="$(dirname "$(readlink -f "$0")")"
+    LOGI "当前脚本执行路径为:${home}"
+    LOGI "正在开启自动更新geo数据..."
+    crontab -l >/tmp/crontabTask.tmp
+    echo "00 4 */2 * * ${home}/tools.sh geo > /dev/null" >>/tmp/crontabTask.tmp
+    crontab /tmp/crontabTask.tmp
+    rm /tmp/crontabTask.tmp
+    LOGI "开启自动更新geo数据成功"
+}
 
 function main() {
     if [[ $# -gt 0 ]]; then
@@ -244,11 +302,20 @@ function main() {
         "install")
             xrayr_setting
             ;;
+        "geo")
+            update_geo_assets
+            ;;
+        "cron")
+            enable_xrayr_cron_job
+            ;;
         "optimize")
             tcp_tune
             ;;
         "ruleset")
             enable_xrayr_rule_check
+            ;;
+        "route")
+            enable_xrayr_route_setting
             ;;
         "time")
             time_zone_set
