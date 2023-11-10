@@ -10,6 +10,24 @@
                 "type": "http"
             }
         },
-        "tag": "block"
+        "tag": "blocked"
+    },
+    {
+        "protocol": "blackhole",
+        "settings": {
+            "response": {
+                "type": "http"
+            }
+        },
+        "tag": "blockedByIp"
+    },
+    {
+        "protocol": "blackhole",
+        "settings": {
+            "response": {
+                "type": "http"
+            }
+        },
+        "tag": "blockedByDomain"
     }
 ]
