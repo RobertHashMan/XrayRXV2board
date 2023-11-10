@@ -22,12 +22,14 @@ declare -r GEO_SITE='/etc/XrayR/geosite.dat'
 declare -r ROUTE_PATH='/etc/XrayR/route.json'
 declare -r CONFIG_PATH='/etc/XrayR/config.yml'
 declare -r RULE_LIST_PATH='/etc/XrayR/rulelist'
+declare -r OUTBOUND_PATH='/etc/XrayR/outbound.json'
 declare -r EXECTUABLE_FILE_PATH='/usr/local/XrayR/XrayR'
 declare -r SYSTEMD_SERVICE_PATH='/etc/systemd/system/XrayR.service'
 declare -r RULE_LIST_SOURCE='https://raw.githubusercontent.com/RobertHashMan/XrayRXV2board/main/rulelist.yml'
 declare -r CUSTOM_ROUTE_SOURCE='https://raw.githubusercontent.com/RobertHashMan/XrayRXV2board/main/route.json'
 declare -r GEO_IP_SOURCE='https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat'
 declare -r GEO_SITE_SOURCE='https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat'
+declare -r CUSTOM_OUTBOUND_SOURCE='https://raw.githubusercontent.com/RobertHashMan/XrayRXV2board/main/outbound.json'
 
 #Some basic settings here
 plain='\033[0m'
@@ -275,8 +277,11 @@ function enable_xrayr_route_setting() {
         LOGE "当前未安装xrayR,无/etc/XrayR目录,请确认"
         exit 1
     fi
+    #get new outbound config
     wget -O ${ROUTE_PATH} -N --no-check-certificate ${CUSTOM_ROUTE_SOURCE}
+    wget -O ${OUTBOUND_PATH} -N --no-check-certificate ${CUSTOM_OUTBOUND_SOURCE}
     sed -i "s#RouteConfigPath:.*#RouteConfigPath: ${ROUTE_PATH}#g" ${CONFIG_PATH}
+    sed -i "s#OutboundConfigPath:.*#OutboundConfigPath: ${OUTBOUND_PATH}#g" ${CONFIG_PATH}
     LOGI "更新自定义路由成功,重启xrayr"
     xrayr restart
 }
