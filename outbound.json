@@ -1,0 +1,15 @@
+[
+    {
+        "protocol": "freedom",
+        "settings": {}
+    },
+    {
+        "protocol": "blackhole",
+        "settings": {
+            "response": {
+                "type": "http"
+            }
+        },
+        "tag": "block"
+    }
+]
