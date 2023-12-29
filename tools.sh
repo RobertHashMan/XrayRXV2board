@@ -135,6 +135,7 @@ function xrayr_setting() {
     xrayr_api_key_setting
     xrayr_node_id_setting
     xrayr_node_type_setting
+    xrayr_other_setting
 }
 
 #set up panel type
@@ -232,6 +233,12 @@ function xrayr_node_type_setting() {
     fi
     LOGI "设置NodeType:${NODE_TYPE}"
     sed -i "s/NodeType:.*/NodeType: ${NODE_TYPE}/g" ${CONFIG_PATH}
+}
+
+#for other xrayr settings
+function xrayr_other_setting() {
+    #disable REALITY
+    sed -i "s#EnableREALITY:.*#EnableREALITY: false#g" ${CONFIG_PATH}
 }
 
 #for speed limit
